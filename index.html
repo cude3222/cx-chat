@@ -1,121 +1,125 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cx-Chat</title>
-    <style>
-        :root { --bg: #121214; --panel: #1a1a1e; --text: #e2e8f0; --accent: #00ff66; }
-        body { font-family: monospace; background: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; height: 95vh; margin: 0; padding: 10px; box-sizing: border-box; }
-        .box { width: 100%; max-width: 500px; display: flex; flex-direction: column; height: 90vh; box-sizing: border-box; }
-        #login-screen { background: var(--panel); border: 1px solid var(--accent); box-shadow: 0 0 10px rgba(0,255,102,0.2); border-radius: 6px; padding: 25px; display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 300px; margin: auto; }
-        .fld { background: #222226; border: 1px solid #444; color: var(--text); padding: 10px; border-radius: 6px; font-family: inherit; outline: none; font-size: 16px; }
-        .fld:focus { border-color: var(--accent); }
-        #chat-screen { display: none; }
-        #chat-header { display: flex; justify-content: space-between; background: var(--panel); border: 1px solid var(--accent); border-bottom: none; border-top-left-radius: 6px; border-top-right-radius: 6px; padding: 10px; font-weight: bold; color: var(--accent); }
-        #pinned-welcome { background: #261c20; border-left: 3px solid #ff0055; border-right: 1px solid var(--accent); padding: 10px; font-size: 13px; display: flex; justify-content: space-between; }
-        #window { flex: 1; background: var(--panel); border: 1px solid var(--accent); box-shadow: 0 0 10px rgba(0,255,102,0.1); border-bottom-left-radius: 6px; border-bottom-right-radius: 6px; padding: 15px; overflow-y: auto; margin-bottom: 12px; }
-        .msg { background: #222226; padding: 8px; border-radius: 6px; margin-bottom: 8px; border-left: 3px solid var(--accent); word-break: break-word; white-space: pre-wrap; }
-        .msg.sys { border-left: 3px solid #ff0055; background: #261c20; }
-        .tm { color: #666; font-size: 11px; margin-bottom: 3px; display: flex; justify-content: space-between; }
-        .nm { color: var(--accent); font-weight: bold; }
-        #controls { display: flex; gap: 8px; }
-        textarea { flex: 1; background: var(--panel); border: 1px solid var(--accent); color: var(--text); padding: 10px; border-radius: 6px; resize: none; font-family: inherit; outline: none; height: 20px; font-size: 16px; }
-        button { background: var(--accent); color: #000; border: none; padding: 10px 15px; border-radius: 6px; font-family: inherit; font-weight: bold; cursor: pointer; }
-    </style>
-</head>
-<body>
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><title>Cx-Chat</title><style>
+:root{--bg:#121214;--pan:#1a1a1e;--txt:#e2e8f0;--acc:#00ff66;}
+body{font-family:monospace;background:var(--bg);color:var(--txt);display:flex;justify-content:center;align-items:center;height:95vh;margin:0;padding:10px;box-sizing:border-box;}
+.lay{display:none;width:100%;max-width:800px;height:85vh;border:1px solid var(--acc);border-radius:6px;overflow:hidden;}
+.side{width:180px;background:#151518;border-right:1px solid #252529;display:flex;flex-direction:column;gap:5px;padding:10px;box-sizing:border-box;}
+.r-btn{background:transparent;border:none;color:var(--txt);text-align:left;padding:10px;border-radius:6px;cursor:pointer;font:inherit;font-size:13px;}
+.r-btn:hover,.r-btn.act{background:#222226;color:var(--acc);}
+.r-btn.act{font-weight:bold;border:1px solid var(--acc);}
+.chat{flex:1;display:flex;flex-direction:column;background:var(--pan);}
+#login-screen{background:var(--pan);border:1px solid var(--acc);border-radius:6px;padding:25px;display:flex;flex-direction:column;gap:12px;width:300px;margin:auto;}
+.fld{background:#222226;border:1px solid #444;color:var(--txt);padding:10px;border-radius:6px;font:inherit;outline:none;}
+.fld:focus{border-color:var(--acc);}
+#hdr,#p-box,#ctrls{display:flex;padding:10px 15px;border-bottom:1px solid #252529;align-items:center;justify-content:space-between;}
+#p-box{background:#261c20;border-left:3px solid #ff0055;}
+#window{flex:1;padding:15px;overflow-y:auto;box-sizing:border-box;}
+.msg{background:#222226;padding:8px 12px;border-radius:6px;margin-bottom:8px;border-left:3px solid var(--acc);word-break:break-word;white-space:pre-wrap;font-size:14px;}
+.msg.sys{border-left:3px solid #ff0055;background:#261c20;}
+.tm{color:#666;font-size:11px;margin-bottom:3px;display:flex;justify-content:space-between;}
+#ctrls{border-top:1px solid #252529;border-bottom:none;gap:8px;}
+textarea{flex:1;background:#222226;border:1px solid var(--acc);color:var(--txt);padding:10px;border-radius:6px;resize:none;font:inherit;outline:none;height:20px;}
+.btn-g{background:var(--acc);color:#000;border:none;padding:10px 15px;border-radius:6px;font-weight:bold;cursor:pointer;}
+.btn-o{background:#ff0055;color:#fff;border:none;padding:5px 10px;border-radius:4px;font-size:11px;font-weight:bold;cursor:pointer;}
+#dev{display:none;position:fixed;top:10px;right:10px;width:260px;background:#0c0c0e;border:2px solid #ff0055;border-radius:6px;padding:15px;z-index:9999;flex-direction:column;gap:10px;}
+</style></head><body>
 
     <div id="login-screen">
-        <h2 style="margin:0;text-align:center;color:var(--accent)">Cx-Chat</h2>
+        <h2 style="margin:0;text-align:center;color:var(--acc)">Cx-Chat</h2>
         <input type="text" id="un" class="fld" placeholder="Никнейм" maxlength="20">
-        <button id="lbtn" onclick="login()">Войти</button>
+        <input type="password" id="pw" class="fld" placeholder="Пароль">
+        <button class="btn-g" onclick="login()">Войти</button>
     </div>
 
-    <div id="chat-screen" class="box">
-        <div id="chat-header"><span id="title">🔴 Cx-Chat (main)</span><span id="on">Соединение...</span></div>
-        <div id="pinned-welcome"><span style="color:#ff0055;font-weight:bold;">СИСТЕМА: <span style="color:var(--text);font-weight:normal;">Добро пожаловать</span></span><span id="wt" style="color:#666;font-size:11px;">--:--</span></div>
-        <div id="window"></div>
-        <div id="controls"><textarea id="in" placeholder="Сообщение..."></textarea><button id="sbtn" onclick="send()">-></button></div>
+    <div id="dev">
+        <div style="color:#ff0055;font-weight:bold;font-size:12px;text-align:center;">🛠 DEV TERMINAL</div>
+        <input type="text" id="d-arg" class="fld" style="border-color:#ff0055;" placeholder="Никнейм или Текст">
+        <div style="display:flex;gap:5px;">
+            <button onclick="exD('/kick')" style="background:#ff0055;color:#fff;flex:1;padding:8px;border:none;cursor:pointer;">KICK</button>
+            <button onclick="exD('/announce')" style="background:#00fff0;color:#000;flex:1;padding:8px;border:none;cursor:pointer;">ALERT</button>
+        </div>
+    </div>
+
+    <div id="chat-screen" class="lay">
+        <div class="side">
+            <div style="font-size:11px;color:#666;text-transform:uppercase;margin-bottom:8px;padding-left:5px;">Чаты</div>
+            <button id="rb-main" class="r-btn act" onclick="swR('main')">💬 Общий</button>
+            <button id="rb-coding" class="r-btn" onclick="swR('coding')">💻 Кодинг</button>
+            <button id="rb-gaming" class="r-btn" onclick="swR('gaming')">🎮 Игры</button>
+            <button id="rb-flood" class="r-btn" onclick="swR('flood')">🔥 Флуд</button>
+        </div>
+        <div class="chat">
+            <div id="hdr">
+                <span id="u-dis">u/загрузка...</span>
+                <div style="display:flex;align-items:center;gap:15px;"><span id="on">В сети: --</span><button class="btn-o" onclick="out()">ВЫХОД</button></div>
+            </div>
+            <div id="p-box">
+                <span style="color:#ff0055;font-weight:bold;">СИСТЕМА: <span style="color:var(--txt);font-weight:normal;">Добро пожаловать</span></span>
+                <span id="wt" style="color:#666;font-size:11px;">--:--</span>
+            </div>
+            <div id="window"></div>
+            <div id="ctrls"><textarea id="in" placeholder="Сообщение..."></textarea><button class="btn-g" onclick="send()">-></button></div>
+        </div>
     </div>
 
     <script>
-        let nick = '', room = 'main', ws = null;
+        let nick='', room='main', ws=null, pass='';
+        const \$ = id => document.getElementById(id), getTm = () => new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
 
-        const getTm = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-        function addMsg(sender, text, time, isSys = false) {
-            if (isSys && text === 'Добро пожаловать') { document.getElementById('wt').textContent = time || getTm(); return; }
-            const div = document.createElement('div');
-            div.className = isSys ? 'msg sys' : 'msg';
-            div.innerHTML = `<div class="tm"><span class="nm">${isSys ? sender : 'u/' + sender}</span><span>${time || getTm()}</span></div><div></div>`;
-            div.querySelector('div:not(.tm)').textContent = text;
-            document.getElementById('window').appendChild(div);
-            document.getElementById('window').scrollTop = document.getElementById('window').scrollHeight;
+        function addM(sn, tx, tm, sy=false) {
+            if (sy && tx === 'Добро пожаловать') { \$('wt').textContent = tm || getTm(); return; }
+            const d = document.createElement('div'); d.className = sy ? 'msg sys' : 'msg';
+            d.innerHTML = `<div class="tm"><span style="color:var(--acc);font-weight:bold">${sy ? sn : 'u/'+sn}</span><span>${tm||getTm()}</span></div><div></div>`;
+            d.querySelector('div:not(.tm)').textContent = tx; \$('window').appendChild(d); \$('window').scrollTop = \$('window').scrollHeight;
         }
 
         window.onload = () => {
-            if (localStorage.getItem('chat_nick')) {
-                nick = localStorage.getItem('chat_nick');
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('chat-screen').style.display = 'flex';
-                connectToServer();
-            }
+            const n = localStorage.getItem('c_n'), p = localStorage.getItem('c_p');
+            if (n && p) { nick = n; pass = p; connect(p); } else if (n) { \$('un').value = n; \$('pw').focus(); }
         };
 
-        function login() {
-            nick = document.getElementById('un').value.trim();
-            if (!nick) return alert('Введите никнейм!');
-            localStorage.setItem('chat_nick', nick);
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('chat-screen').style.display = 'flex';
-            connectToServer();
-        }
+        function login() { nick = \$('un').value.trim(); pass = \$('pw').value.trim(); if (nick && pass) connect(pass); else alert('Заполните поля!'); }
 
-        function connectToServer() {
-            const tunnelURL = "mighty-tigers-thank.loca.lt"; 
-            ws = new WebSocket('wss://' + tunnelURL);
-            
-            ws.onopen = () => {
-                ws.send(JSON.stringify({ type: 'login', sender: nick }));
-            };
-            
+        function connect(p) {
+            ws = new WebSocket('wss://mighty-tigers-thank.loca.lt');
+            ws.onopen = () => ws.send(JSON.stringify({type:'login', sender:nick, password:p}));
             ws.onmessage = (e) => {
-                const res = JSON.parse(e.data);
-                if (res.type === 'login_status' && !res.success) { alert(res.info); logout(); }
-                else if (res.type === 'online') document.getElementById('on').textContent = 'В сети: ' + res.count;
-                else if (res.type === 'msg') addMsg(res.sender, res.text, res.time, res.isSystem);
-                else if (res.type === 'history') {
-                    document.getElementById('window').innerHTML = '';
-                    res.data.forEach(m => addMsg(m.sender, m.text, m.time, m.isSystem));
+                const r = JSON.parse(e.data);
+                if (r.type === 'login_status') {
+                    if (r.success) {
+                        localStorage.setItem('c_n', nick); localStorage.setItem('c_p', pass);
+                        \$('login-screen').style.display = 'none'; \$('chat-screen').style.display = 'flex'; \$('u-dis').textContent = 'u/' + nick;
+                    } else { alert(r.info); out(); }
                 }
+                else if (r.type === 'online') \$('on').textContent = 'В сети: ' + r.count;
+                else if (r.type === 'msg') addM(r.sender, r.text, r.time, r.isSystem);
+                else if (r.type === 'kick_event') { alert('Вы кикнуты!'); out(); }
+                else if (r.type === 'history') { \$('window').innerHTML = ''; r.data.forEach(m => addM(m.sender, m.text, m.time, m.isSystem)); }
             };
-            ws.onclose = () => { setTimeout(connectToServer, 3000); };
+            ws.onclose = () => \$('on').textContent = 'В сети: оффлайн';
         }
 
-        function logout() { localStorage.removeItem('chat_nick'); if (ws) ws.close(); location.reload(); }
+        function swR(nr) {
+            if (room === nr || !ws || ws.readyState !== 1) return;
+            document.querySelectorAll('.r-btn').forEach(b => b.classList.remove('act')); \$('rb-' + nr).classList.add('act');
+            room = nr; \$('window').innerHTML = ''; ws.send(JSON.stringify({type:'join_room', room:nr}));
+        }
+
+        function out() { localStorage.removeItem('c_n'); localStorage.removeItem('c_p'); if (ws) ws.close(); location.reload(); }
 
         function send() {
-            const txt = document.getElementById('in').value.trim();
-            if (!txt || ws.readyState !== 1) return;
-            document.getElementById('in').value = '';
-
-            if (txt.startsWith('/')) {
-                const idx = txt.indexOf(' '), cmd = idx !== -1 ? txt.substring(0, idx) : txt, arg = idx !== -1 ? txt.substring(idx + 1).trim() : '';
-                if (cmd === '/room') {
-                    if (!arg) return alert('Укажите имя комнаты!');
-                    room = arg;
-                    document.getElementById('title').textContent = '🔴 Cx-Chat (' + arg + ')';
-                    ws.send(JSON.stringify({ type: 'join_room', room: arg }));
-                } else if (cmd === '/clear') {
-                    ws.send(JSON.stringify({ type: 'command', text: '/clear' }));
-                }
-                return;
-            }
-            ws.send(JSON.stringify({ type: 'msg', text: txt }));
+            const t = \$('in').value.trim(); if (!t || ws.readyState !== 1) return; \$('in').value = '';
+            if (t === '/clear') ws.send(JSON.stringify({type:'command', text:'/clear'})); else ws.send(JSON.stringify({type:'msg', text:t}));
         }
 
-        document.getElementById('in').addEventListener('keydown', function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } });
+        window.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key === 'L') { e.preventDefault(); const c = \$('dev'); c.style.display = (c.style.display === 'flex') ? 'none' : 'flex'; }
+        });
+
+        function exD(t) {
+            const v = \$('d-arg').value.trim(); if (!v || ws.readyState !== 1) return;
+            ws.send(JSON.stringify({type:'admin_cmd', cmd:t, arg:v})); \$('d-arg').value = '';
+        }
+
+        \$('in').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } });
     </script>
-</body>
-</html>
+</body></html>
