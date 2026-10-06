@@ -2,59 +2,50 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cx-Chat</title>
     <style>
         :root { --bg: #121214; --panel: #1a1a1e; --text: #e2e8f0; --accent: #00ff66; }
-        body { font-family: monospace; background: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; padding: 10px; box-sizing: border-box; }
-        .box { width: 100%; max-width: 500px; display: flex; flex-direction: column; height: 95vh; box-sizing: border-box; }
-        #login-screen { background: var(--panel); border: 1px solid var(--accent); box-shadow: 0 0 10px rgba(0,255,102,0.2); border-radius: 6px; padding: 25px; display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 300px; margin: auto; box-sizing: border-box; }
-        .fld { background: #222226; border: 1px solid #444; color: var(--text); padding: 12px; border-radius: 6px; font-family: inherit; outline: none; font-size: 16px; }
+        body { font-family: monospace; background: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; height: 95vh; margin: 0; padding: 10px; box-sizing: border-box; }
+        .box { width: 100%; max-width: 500px; display: flex; flex-direction: column; height: 90vh; box-sizing: border-box; }
+        #login-screen { background: var(--panel); border: 1px solid var(--accent); box-shadow: 0 0 10px rgba(0,255,102,0.2); border-radius: 6px; padding: 25px; display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 300px; margin: auto; }
+        .fld { background: #222226; border: 1px solid #444; color: var(--text); padding: 10px; border-radius: 6px; font-family: inherit; outline: none; font-size: 16px; }
         .fld:focus { border-color: var(--accent); }
         #chat-screen { display: none; }
-        #chat-header { display: flex; justify-content: space-between; background: var(--panel); border: 1px solid var(--accent); border-bottom: none; border-top-left-radius: 6px; border-top-right-radius: 6px; padding: 12px; font-weight: bold; color: var(--accent); font-size: 14px; }
-        #pinned-welcome { background: #261c20; border-left: 3px solid #ff0055; border-right: 1px solid var(--accent); padding: 10px 12px; font-size: 13px; display: flex; justify-content: space-between; box-sizing: border-box; }
-        #window { flex: 1; background: var(--panel); border: 1px solid var(--accent); box-shadow: 0 0 10px rgba(0,255,102,0.1); border-bottom-left-radius: 6px; border-bottom-right-radius: 6px; padding: 12px; overflow-y: auto; margin-bottom: 12px; box-sizing: border-box; }
-        .msg { background: #222226; padding: 10px; border-radius: 6px; margin-bottom: 8px; border-left: 3px solid var(--accent); word-break: break-word; white-space: pre-wrap; font-size: 14px; }
+        #chat-header { display: flex; justify-content: space-between; background: var(--panel); border: 1px solid var(--accent); border-bottom: none; border-top-left-radius: 6px; border-top-right-radius: 6px; padding: 10px; font-weight: bold; color: var(--accent); }
+        #pinned-welcome { background: #261c20; border-left: 3px solid #ff0055; border-right: 1px solid var(--accent); padding: 10px; font-size: 13px; display: flex; justify-content: space-between; }
+        #window { flex: 1; background: var(--panel); border: 1px solid var(--accent); box-shadow: 0 0 10px rgba(0,255,102,0.1); border-bottom-left-radius: 6px; border-bottom-right-radius: 6px; padding: 15px; overflow-y: auto; margin-bottom: 12px; }
+        .msg { background: #222226; padding: 8px; border-radius: 6px; margin-bottom: 8px; border-left: 3px solid var(--accent); word-break: break-word; white-space: pre-wrap; }
         .msg.sys { border-left: 3px solid #ff0055; background: #261c20; }
-        .tm { color: #666; font-size: 11px; margin-bottom: 4px; display: flex; justify-content: space-between; }
+        .tm { color: #666; font-size: 11px; margin-bottom: 3px; display: flex; justify-content: space-between; }
         .nm { color: var(--accent); font-weight: bold; }
-        #controls { display: flex; gap: 8px; width: 100%; box-sizing: border-box; }
-        textarea { flex: 1; background: var(--panel); border: 1px solid var(--accent); color: var(--text); padding: 12px; border-radius: 6px; resize: none; font-family: inherit; outline: none; height: 24px; font-size: 16px; }
-        button { background: var(--accent); color: #000; border: none; padding: 12px 20px; border-radius: 6px; font-family: inherit; font-weight: bold; cursor: pointer; font-size: 16px; }
+        #controls { display: flex; gap: 8px; }
+        textarea { flex: 1; background: var(--panel); border: 1px solid var(--accent); color: var(--text); padding: 10px; border-radius: 6px; resize: none; font-family: inherit; outline: none; height: 20px; font-size: 16px; }
+        button { background: var(--accent); color: #000; border: none; padding: 10px 15px; border-radius: 6px; font-family: inherit; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <!-- ВХОД -->
     <div id="login-screen">
-        <h2 style="margin:0;text-align:center;color:var(--accent);font-size:22px;">Cx-Chat</h2>
+        <h2 style="margin:0;text-align:center;color:var(--accent)">Cx-Chat</h2>
         <input type="text" id="un" class="fld" placeholder="Никнейм" maxlength="20">
         <button id="lbtn" onclick="login()">Войти</button>
     </div>
 
-    <!-- ЧАТ -->
     <div id="chat-screen" class="box">
         <div id="chat-header"><span id="title">🔴 Cx-Chat (main)</span><span id="on">Соединение...</span></div>
         <div id="pinned-welcome"><span style="color:#ff0055;font-weight:bold;">СИСТЕМА: <span style="color:var(--text);font-weight:normal;">Добро пожаловать</span></span><span id="wt" style="color:#666;font-size:11px;">--:--</span></div>
         <div id="window"></div>
-        <div id="controls">
-            <textarea id="in" placeholder="Сообщение..."></textarea>
-            <button id="sbtn" onclick="send()">-></button>
-        </div>
+        <div id="controls"><textarea id="in" placeholder="Сообщение..."></textarea><button id="sbtn" onclick="send()">-></button></div>
     </div>
 
     <script>
-        let nick = '', room = 'main', ws = null, isServerConnected = false;
-        const bc = new BroadcastChannel('cx_fallback');
+        let nick = '', room = 'main', ws = null;
 
         const getTm = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
         function addMsg(sender, text, time, isSys = false) {
-            if (isSys && text === 'Добро пожаловать') {
-                document.getElementById('wt').textContent = time || getTm();
-                return;
-            }
+            if (isSys && text === 'Добро пожаловать') { document.getElementById('wt').textContent = time || getTm(); return; }
             const div = document.createElement('div');
             div.className = isSys ? 'msg sys' : 'msg';
             div.innerHTML = `<div class="tm"><span class="nm">${isSys ? sender : 'u/' + sender}</span><span>${time || getTm()}</span></div><div></div>`;
@@ -63,16 +54,9 @@
             document.getElementById('window').scrollTop = document.getElementById('window').scrollHeight;
         }
 
-        function loadLocal() {
-            document.getElementById('window').innerHTML = '';
-            const history = JSON.parse(localStorage.getItem('hist_' + room) || '[]');
-            history.forEach(m => addMsg(m.sn, m.tx, m.tm, m.sy));
-        }
-
         window.onload = () => {
-            const savedNick = localStorage.getItem('chat_nick');
-            if (savedNick) {
-                nick = savedNick;
+            if (localStorage.getItem('chat_nick')) {
+                nick = localStorage.getItem('chat_nick');
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('chat-screen').style.display = 'flex';
                 connectToServer();
@@ -89,17 +73,10 @@
         }
 
         function connectToServer() {
-            // Код сам понимает глобальный адрес сайта и меняет http на websocket протокол wss://
-            const hostUrl = window.location.host;
-            const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-            
-            // Если запускаешь файл просто с ПК без сервера, он подключится к домашнему localhost
-            const wsAddress = hostUrl ? (protocol + hostUrl) : 'ws://localhost:8085';
-            
-            ws = new WebSocket(wsAddress);
+            const tunnelURL = "mighty-tigers-thank.loca.lt"; 
+            ws = new WebSocket('wss://' + tunnelURL);
             
             ws.onopen = () => {
-                isServerConnected = true;
                 ws.send(JSON.stringify({ type: 'login', sender: nick }));
             };
             
@@ -113,22 +90,14 @@
                     res.data.forEach(m => addMsg(m.sender, m.text, m.time, m.isSystem));
                 }
             };
-            ws.onerror = () => localMode();
-            ws.onclose = () => { if (isServerConnected) { isServerConnected = false; setTimeout(connectToServer, 3000); } else { localMode(); } };
-        }
-
-        function localMode() {
-            document.getElementById('on').textContent = "В сети: локально";
-            if (document.getElementById('window').children.length === 0) { addMsg('СИСТЕМА', 'Добро пожаловать', getTm(), true); loadLocal(); }
+            ws.onclose = () => { setTimeout(connectToServer, 3000); };
         }
 
         function logout() { localStorage.removeItem('chat_nick'); if (ws) ws.close(); location.reload(); }
 
-        bc.onmessage = (e) => { if (!isServerConnected && e.data.rm === room) addMsg(e.data.sn, e.data.tx, e.data.tm, e.data.sy); };
-
         function send() {
             const txt = document.getElementById('in').value.trim();
-            if (!txt) return;
+            if (!txt || ws.readyState !== 1) return;
             document.getElementById('in').value = '';
 
             if (txt.startsWith('/')) {
@@ -137,22 +106,13 @@
                     if (!arg) return alert('Укажите имя комнаты!');
                     room = arg;
                     document.getElementById('title').textContent = '🔴 Cx-Chat (' + arg + ')';
-                    if (isServerConnected && ws.readyState === 1) ws.send(JSON.stringify({ type: 'join_room', room: arg }));
-                    else { loadLocal(); addMsg('СИСТЕМА', 'Вы перешли в комнату: ' + arg, getTm(), true); }
+                    ws.send(JSON.stringify({ type: 'join_room', room: arg }));
                 } else if (cmd === '/clear') {
-                    if (isServerConnected && ws.readyState === 1) ws.send(JSON.stringify({ type: 'command', text: '/clear' }));
-                    else { localStorage.setItem('hist_' + room, '[]'); document.getElementById('window').innerHTML = ''; }
+                    ws.send(JSON.stringify({ type: 'command', text: '/clear' }));
                 }
                 return;
             }
-
-            if (isServerConnected && ws.readyState === 1) ws.send(JSON.stringify({ type: 'msg', text: txt }));
-            else {
-                const m = { sn: nick, tx: txt, tm: getTm(), rm: room, sy: false };
-                addMsg(m.sn, m.tx, m.tm, false);
-                const h = JSON.parse(localStorage.getItem('hist_' + room) || '[]'); h.push(m);
-                localStorage.setItem('hist_' + room, JSON.stringify(h)); bc.postMessage(m);
-            }
+            ws.send(JSON.stringify({ type: 'msg', text: txt }));
         }
 
         document.getElementById('in').addEventListener('keydown', function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } });
